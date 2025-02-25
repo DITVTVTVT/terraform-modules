@@ -1,10 +1,12 @@
-variable "env" {
-  default = "dev"
+variable "vpc_id" {
+  description = "ID of the VPC to associate with the security group"
+  type        = string
 }
 
-variable "allow_port_list" {
-  default = {
-    "prod" = ["80", "443"]
-    "dev"  = ["80", "443", "8080", "22"]
-  }
+variable "port_cidr_map" {
+  description = "Map of ports and corresponding CIDR blocks"
+  type = map(object({
+    port      = number
+    cidr_block = string
+  }))
 }

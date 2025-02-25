@@ -1,34 +1,33 @@
 # Future Terraform Module :)
 #
-# Do it yourself!
+# Do it yourself! Or with ChatGPT;)
 #----------------------------------------------
-provider "aws" {
-  region = "us-east-1"
-}
+resource "aws_security_group" "custom_sg" {
+  name        = "custom-sg"
+  description = "Security Group with dynamic ports and CIDR blocks"
+  vpc_id      = var.vpc_id  # связываем Security Group с VPC
 
-resource "aws_security_group" "main" {
-  name = "${var.env} Security Group"
-  vpc_id = ""
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
   dynamic "ingress" {
-    for_each = lookup(var.allow_port_list, var.env)
+    for_each = var.port_cidr_map
     content {
-
-      from_port   = ingress.value
-      to_port     = ingress.value
+      from_port   = ingress.value.port
+      to_port     = ingress.value.port
       protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
+      cidr_blocks = [ingress.value.cidr_block]
     }
   }
 
   egress {
     from_port   = 0
     to_port     = 0
-    protocol    = "-1"
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "${var.env}-SecurityGroup"
   }
 }
