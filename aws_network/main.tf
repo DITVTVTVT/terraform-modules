@@ -102,5 +102,5 @@ resource "aws_subnet" "private_subnets" {
 #   subnet_id = element(aws_subnet.private_subnets[*].id, count.index)
 #   route_table_id = aws_route_table.private_subnets[count.index].id
 # }
-
+#
 #=============================================================
